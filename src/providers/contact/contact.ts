@@ -33,7 +33,7 @@ export class ContactProvider {
 
     let listarContatos: ContactList[]=[];
 
-    this.storage.forEach((value:Contact, key:string, intratioNumber: Number)=>{
+    return this.storage.forEach((value:Contact, key:string, intratioNumber: Number)=>{
 
       let contact = new ContactList();
       contact.key = key;
