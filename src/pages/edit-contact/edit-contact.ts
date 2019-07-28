@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { ContactProvider, Contact } from '../../providers/contact/contact';
 
-/**
- * Generated class for the EditContactPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -15,11 +10,57 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class EditContactPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  model: Contact;
+  key: string;
+
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private service: ContactProvider,
+    private toaste: ToastController) {
+
+    if (navParams.data.contact && navParams.data.key) {
+
+      this.model = this.navParams.data.contact;
+      this.key = this.navParams.data.key;
+
+    } else {
+
+      this.model = new Contact();
+    }
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EditContactPage');
+  save() {
+
+    this.saveContato()
+    .then(()=>{
+      this.toaste.create({
+        message:'Contato Salvo',
+        duration:4000,
+        position:'top'
+      }).present();
+
+      this.navCtrl.pop();
+    })
+    .catch(()=>{
+
+      this.toaste.create({
+        message:'Error ao Salvar o contato',
+        duration:4000,
+        position:'bottom'
+      }).present();
+
+    })
+
+  }
+
+  private saveContato() {
+
+    if (this.key) {
+      return this.service.update(this.key, this.model);
+    } else {
+      return this.service.insert(this.model);
+    }
+
   }
 
 }
